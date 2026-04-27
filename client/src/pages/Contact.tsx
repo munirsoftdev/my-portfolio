@@ -7,6 +7,9 @@ import {
 	FaPaperPlane,
 } from "react-icons/fa";
 
+// 1. Keep the API_URL outside the component
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const Contact: FC = () => {
 	const [formData, setFormData] = useState({
 		name: "",
@@ -23,7 +26,8 @@ const Contact: FC = () => {
 		setStatus("loading");
 
 		try {
-			await axios.post("http://localhost:5000/api/contact", formData);
+			// 2. Using the dynamic API_URL here
+			await axios.post(`${API_URL}/api/contact`, formData);
 
 			setStatus("success");
 			setFormData({ name: "", email: "", subject: "", message: "" });

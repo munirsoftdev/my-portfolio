@@ -8,7 +8,9 @@ import {
 } from "react-icons/fa";
 
 // 1. Keep the API_URL outside the component
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = "https://my-portfolio-a3vd.onrender.com"
+
+// const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Contact: FC = () => {
 	const [formData, setFormData] = useState({

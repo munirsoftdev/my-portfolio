@@ -15,7 +15,7 @@ function Footer() {
 		},
 		{
 			name: "WhatsApp",
-			href: "https://wa.me/+23481497011155",
+			href: "https://wa.me/+2348149701155",
 			icon: <FaWhatsapp />,
 			color: "hover:text-green-500",
 		},
@@ -27,7 +27,7 @@ function Footer() {
 		},
 		{
 			name: "Telegram",
-			href: "https://t.me/+23481497011155",
+			href: "https://t.me/+2348149701155",
 			icon: <FaTelegramPlane />,
 			color: "hover:text-sky-400",
 		},

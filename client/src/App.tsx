@@ -7,6 +7,7 @@ import Skill from "./pages/Skill";
 import Experience from "./pages/Experience";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import ScrollToTop from "./component/ScrollToTop";
 
 function App() {
 	return (
@@ -14,7 +15,7 @@ function App() {
 			{" "}
 			<BrowserRouter>
 				<NavBar />
-
+                 <ScrollToTop/>   
 				<main className="grow pt-16 pb-20">
 					<Routes>
 						<Route path="/" element={<Home />} />

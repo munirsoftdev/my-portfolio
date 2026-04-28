@@ -11,9 +11,12 @@ const PORT = process.env.PORT || 5000;
 // Middleware
 app.use(
 	cors({
-		origin: "https://munirSoftdev.onrender.com",
+		origin: "https://munirsoftdev-site.onrender.com",
+		methods: ["GET", "POST", "PUT", "DELETE"], // Optional: Specify allowed methods
+		credentials: true, // Optional: If you're using cookies/sessions
 	}),
 );
+
 app.use(express.json());
 
 // 1. Configure the Rate Limiter

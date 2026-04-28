@@ -36,8 +36,8 @@ const contactLimiter = rateLimit({
 
 const transporter = nodemailer.createTransport({
 	host: "smtp.gmail.com",
-	port: 587,
-	secure: false,
+	port: 465,
+	secure: true,
 	auth: {
 		user: process.env.EMAIL_USER,
 		pass: process.env.EMAIL_PASS,
@@ -84,6 +84,8 @@ app.post(
 app.get("/health", (req, res) => {
 	res.status(200).send("Server is awake!");
 });
+
+app.set("trust proxy", 1);
 
 app.listen(PORT, () => {
 	console.log(`🚀 Server running on ${PORT}`);

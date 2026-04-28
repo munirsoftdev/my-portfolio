@@ -81,6 +81,10 @@ app.post(
 	},
 );
 
+app.get("/health", (req, res) => {
+	res.status(200).send("Server is awake!");
+});
+
 app.listen(PORT, () => {
 	console.log(`🚀 Server running on ${PORT}`);
 });

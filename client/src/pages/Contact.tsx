@@ -6,10 +6,7 @@ import {
 	FaMapMarkerAlt,
 	FaPaperPlane,
 } from "react-icons/fa";
-
-// 1. Keep the API_URL outside the component
-
-// const API_URL = "https://my-portfolio-a3vd.onrender.com"
+import { ImSpinner2 } from "react-icons/im";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -141,12 +138,16 @@ const Contact: FC = () => {
 								className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-50"
 							>
 								{status === "loading" ?
-									"Sending..."
+									<>
+										<ImSpinner2 className="animate-spin text-xl" />
+										Sending...
+									</>
 								:	<>
 										<FaPaperPlane /> Send Message
 									</>
 								}
 							</button>
+
 							{status === "success" && (
 								<p className="text-emerald-400 text-center">
 									Message sent successfully!

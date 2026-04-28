@@ -19,7 +19,7 @@ const About: FC = () => {
 			label: "Education",
 			value: (
 				<>
-					Computer Science <br /> Software Engineering
+					Computer Science, <br /> Software Engineering
 				</>
 			),
 		},

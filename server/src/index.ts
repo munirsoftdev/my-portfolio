@@ -14,10 +14,9 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(
 	cors({
-		origin:
-			process.env.ALLOWED_ORIGIN || "https://munirsoftdev-site.onrender.com",
-		methods: ["GET", "POST", "PUT", "DELETE"], // Optional: Specify allowed methods
-		credentials: true, // Optional: If you're using cookies/sessions
+		origin: ["https://munirsoftdev-site.onrender.com", "http://localhost:5173"],
+		methods: ["GET", "POST", "PUT", "DELETE"],
+		credentials: true,
 	}),
 );
 

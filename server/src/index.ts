@@ -14,7 +14,8 @@ app.set("trust proxy", 1);
 app.use(helmet());
 app.use(
 	cors({
-		origin: "https://munirsoftdev-site.onrender.com",
+		origin:
+			process.env.ALLOWED_ORIGIN || "https://munirsoftdev-site.onrender.com",
 		methods: ["GET", "POST", "PUT", "DELETE"], // Optional: Specify allowed methods
 		credentials: true, // Optional: If you're using cookies/sessions
 	}),
@@ -25,7 +26,7 @@ app.use(express.json());
 // 1. Configure the Rate Limiter
 const contactLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	max: 3, // Limit each IP to 3 requests per windowMs
+	max: 10, // Limit each IP to 10 requests per windowMs
 	message: {
 		success: false,
 		message:
@@ -36,9 +37,10 @@ const contactLimiter = rateLimit({
 });
 
 const transporter = nodemailer.createTransport({
-	host: "smtp.gmail.com",
-	port: 465,
-	secure: true,
+	// host: "smtp.gmail.com",
+	// port: 465,
+	// secure: true,
+	service: "gmail",
 	auth: {
 		user: process.env.EMAIL_USER,
 		pass: process.env.EMAIL_PASS,

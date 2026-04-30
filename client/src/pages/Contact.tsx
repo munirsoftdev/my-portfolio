@@ -26,13 +26,17 @@ const Contact: FC = () => {
 		setStatus("loading");
 
 		try {
-			// 2. Using the dynamic API_URL here
 			await axios.post(`${API_URL}/api/contact`, formData);
-
 			setStatus("success");
 			setFormData({ name: "", email: "", subject: "", message: "" });
 		} catch (error) {
 			console.error("Submission error:", error);
+
+			// Check if the error is a Rate Limit (429) error
+			if (axios.isAxiosError(error) && error.response?.status === 429) {
+				alert("Too many messages! Please wait 15 minutes.");
+			}
+
 			setStatus("error");
 		}
 	};

@@ -1,13 +1,10 @@
 import express from "express";
 import type { Request, Response } from "express";
-import nodemailer from "nodemailer";
 import cors from "cors";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import dns from "dns";
+import emailjs from "@emailjs/nodejs";
 import "dotenv/config";
-
-dns.setDefaultResultOrder("ipv4first");
 
 const app = express();
 const PORT = Number(process.env.PORT) || 5000;
@@ -35,65 +32,34 @@ const contactLimiter = rateLimit({
 	legacyHeaders: false,
 });
 
-// Fix #1: Don't import internal paths. Use `any` or let TS infer.
-const transporter = nodemailer.createTransport({
-	host: "smtp.gmail.com",
-	port: 465,
-	secure: true,
-	family: 4,
-	auth: {
-		user: process.env.EMAIL_USER,
-		pass: process.env.EMAIL_PASS,
-	},
-	tls: {
-		rejectUnauthorized: false,
-	},
-} as any); // <-- Easiest fix. TS will stop complaining
-
-// Fix #2: Better - verify connection on startup to catch DNS issues early
-transporter.verify((error, success) => {
-	if (error) {
-		console.error("SMTP connection failed:", error);
-	} else {
-		console.log("SMTP server is ready to take messages");
-	}
-});
-
 app.post(
 	"/api/contact",
 	contactLimiter,
-	async (req: Request, res: Response): Promise<void> => {
+	async (req: Request, res: Response) => {
+		const { name, email, subject, message } = req.body;
+
 		try {
-			const { name, email, subject, message } = req.body;
-
-			if (!name || !email || !message) {
-				res
-					.status(400)
-					.json({ success: false, message: "Missing required fields" });
-				return;
-			}
-
-			const mailOptions = {
-				from: process.env.EMAIL_USER,
-				replyTo: email,
-				to: "muniryahaya2002@gmail.com",
-				subject: `[Portfolio Contact] ${subject ? subject : "New Message from " + name}`,
-				text: `From: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
-			};
-
-			await transporter.sendMail(mailOptions);
+			await emailjs.send(
+				process.env.EMAILJS_SERVICE_ID!,
+				process.env.EMAILJS_TEMPLATE_ID!,
+				{ name, email, subject, message },
+				{
+					publicKey: process.env.EMAILJS_PUBLIC_KEY!,
+					privateKey: process.env.EMAILJS_PRIVATE_KEY!,
+				},
+			);
 			res.status(200).json({ success: true, message: "Email sent!" });
 		} catch (error) {
-			console.error("Email Error:", error);
-			res.status(500).json({ success: false, message: "Server error" });
+			console.error("EmailJS Error:", error);
+			res.status(500).json({ success: false, message: "Email failed" });
 		}
 	},
 );
 
-app.get("/health", (req, res) => {
+app.get("/health", (req: Request, res: Response) => {
 	res.status(200).send("Server is awake!");
 });
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
 	console.log(`🚀 Server running on ${PORT}`);
 });

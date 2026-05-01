@@ -1,5 +1,5 @@
 import { useState, type FC, type FormEvent } from "react";
-import axios from "axios";
+// 1. Remove @emailjs/browser import - your backend handles this now
 import {
 	FaPhoneAlt,
 	FaEnvelope,
@@ -7,8 +7,6 @@ import {
 	FaPaperPlane,
 } from "react-icons/fa";
 import { ImSpinner2 } from "react-icons/im";
-
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Contact: FC = () => {
 	const [formData, setFormData] = useState({
@@ -26,17 +24,31 @@ const Contact: FC = () => {
 		setStatus("loading");
 
 		try {
-			await axios.post(`${API_URL}/api/contact`, formData);
-			setStatus("success");
-			setFormData({ name: "", email: "", subject: "", message: "" });
+			// 2. Change this to your Render backend URL (e.g., https://onrender.com)
+			const BACKEND_URL =
+				window.location.hostname === "localhost" ?
+					"http://localhost:5000/api/contact"
+				:	"https://munirsoftdev-site.onrender.com/api/contact";
+			const response = await fetch(BACKEND_URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(formData),
+			});
+
+			const result = await response.json();
+
+			if (response.ok && result.success) {
+				setStatus("success");
+				setFormData({ name: "", email: "", subject: "", message: "" });
+				setTimeout(() => setStatus("idle"), 5000);
+			} else {
+				// This catches Rate Limit errors (429) or Server errors (500)
+				throw new Error(result.message || "Failed to send");
+			}
 		} catch (error) {
 			console.error("Submission error:", error);
-
-			// Check if the error is a Rate Limit (429) error
-			if (axios.isAxiosError(error) && error.response?.status === 429) {
-				alert("Too many messages! Please wait 15 minutes.");
-			}
-
 			setStatus("error");
 		}
 	};

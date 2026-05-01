@@ -1,5 +1,4 @@
 import { useState, type FC, type FormEvent } from "react";
-// 1. Remove @emailjs/browser import - your backend handles this now
 import {
 	FaPhoneAlt,
 	FaEnvelope,
@@ -24,11 +23,8 @@ const Contact: FC = () => {
 		setStatus("loading");
 
 		try {
-			// 2. Change this to your Render backend URL (e.g., https://onrender.com)
 			const BACKEND_URL =
-				window.location.hostname === "localhost" ?
-					"http://localhost:5000/api/contact"
-				:	"https://munirsoftdev-site.onrender.com/api/contact";
+				import.meta.env.VITE_API_URL || "http://localhost:5000/api/contact";
 			const response = await fetch(BACKEND_URL, {
 				method: "POST",
 				headers: {

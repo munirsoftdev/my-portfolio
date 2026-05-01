@@ -1,4 +1,5 @@
 import { useState, type FC, type FormEvent } from "react";
+import emailjs from "@emailjs/browser";
 import {
 	FaPhoneAlt,
 	FaEnvelope,
@@ -22,29 +23,29 @@ const Contact: FC = () => {
 		e.preventDefault();
 		setStatus("loading");
 
+		const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+		const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+		const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 		try {
-			const BACKEND_URL =
-				import.meta.env.VITE_API_URL || "http://localhost:5000/api/contact";
-			const response = await fetch(BACKEND_URL, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
+			const result = await emailjs.send(
+				serviceId,
+				templateId,
+				{
+					name: formData.name,
+					email: formData.email,
+					subject: formData.subject,
+					message: formData.message,
 				},
-				body: JSON.stringify(formData),
-			});
+				publicKey,
+			);
 
-			const result = await response.json();
-
-			if (response.ok && result.success) {
+			if (result.status === 200) {
 				setStatus("success");
 				setFormData({ name: "", email: "", subject: "", message: "" });
 				setTimeout(() => setStatus("idle"), 5000);
-			} else {
-				// This catches Rate Limit errors (429) or Server errors (500)
-				throw new Error(result.message || "Failed to send");
 			}
 		} catch (error) {
-			console.error("Submission error:", error);
+			console.error("EmailJS Error:", error);
 			setStatus("error");
 		}
 	};
